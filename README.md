@@ -177,6 +177,110 @@ The request body must be in JSON format and include the following fields:
   }
   ```
 
+### Captain Registration
+- **Endpoint**: `POST /captains/register`
+- **Description**: Allows a new captain to register by providing their email, full name, password, and vehicle details. A JSON Web Token (JWT) is generated upon successful registration.
+
+#### Required Data
+The request body must be in JSON format and include the following fields:
+- **email**: (string, required) The captain's email address. Must be a valid email format and unique.
+- **fullname**: (object, required) The captain's full name.
+  - **firstname**: (string, required) The captain's first name. Must be at least 3 characters long.
+  - **lastname**: (string, optional) The captain's last name. Must be at least 3 characters long.
+- **password**: (string, required) The captain's password. Must be at least 6 characters long.
+- **vehicle**: (object, required) The captain's vehicle details.
+  - **color**: (string, required) The color of the vehicle. Must be at least 3 characters long.
+  - **plate**: (string, required) The vehicle's plate number. Must be at least 3 characters long.
+  - **capacity**: (number, required) The vehicle's capacity. Must be at least 1.
+  - **vehicleType**: (string, required) The type of vehicle. Must be one of the following: `car`, `motorcycle`, `auto`.
+
+#### Example Request Body
+```json
+{
+    "email": "captain@example.com",
+    "fullname": {
+        "firstname": "Jane",
+        "lastname": "Doe"
+    },
+    "password": "securepassword",
+    "vehicle": {
+        "color": "red",
+        "plate": "ABC123",
+        "capacity": 4,
+        "vehicleType": "car"
+    }
+}
+```
+
+#### Responses
+- **Success Response**:
+  - **Status Code**: `201 Created`
+  - **Response Body**:
+  ```json
+  {
+      "captain": {
+          "fullname": {
+              "firstname": "Jane",
+              "lastname": "Doe"
+          },
+          "email": "captain@example.com",
+          "vehicle": {
+              "color": "red",
+              "plate": "ABC123",
+              "capacity": 4,
+              "vehicleType": "car"
+          },
+          "socketId": null // or the assigned socketId if applicable
+      },
+      "token": "your_jwt_token_here"
+  }
+  ```
+
+- **Error Responses**:
+  - **Status Code**: `400 Bad Request`
+    - **Response Body**:
+    ```json
+    {
+        "errors": [
+            {
+                "msg": "Invalid email",
+                "param": "email",
+                "location": "body"
+            },
+            {
+                "msg": "First name must be 3 character long",
+                "param": "fullname.firstname",
+                "location": "body"
+            },
+            {
+                "msg": "Password must be at least 6 characters",
+                "param": "password",
+                "location": "body"
+            },
+            {
+                "msg": "Color must be at least 3 characters",
+                "param": "vehicle.color",
+                "location": "body"
+            },
+            {
+                "msg": "Plate must be at least 3 characters",
+                "param": "vehicle.plate",
+                "location": "body"
+            },
+            {
+                "msg": "Capacity must be at least 1",
+                "param": "vehicle.capacity",
+                "location": "body"
+            },
+            {
+                "msg": "Invalid vehicle type",
+                "param": "vehicle.vehicleType",
+                "location": "body"
+            }
+        ]
+    }
+    ```
+
 ## Setup Instructions
 1. Clone the repository.
 2. Install dependencies:
