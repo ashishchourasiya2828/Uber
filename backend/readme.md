@@ -281,6 +281,125 @@ The request body must be in JSON format and include the following fields:
     }
     ```
 
+### Captain Login
+- **Endpoint**: `POST /captains/login`
+- **Description**: Allows an existing captain to log in by providing their email and password. A JSON Web Token (JWT) is generated upon successful login.
+
+#### Required Data
+The request body must be in JSON format and include the following fields:
+- **email**: (string, required) The captain's email address. Must be a valid email format.
+- **password**: (string, required) The captain's password.
+
+#### Example Request Body
+```json
+{
+    "email": "captain@example.com",
+    "password": "securepassword"
+}
+```
+
+#### Responses
+- **Success Response**:
+  - **Status Code**: `200 OK`
+  - **Response Body**:
+  ```json
+  {
+      "captain": {
+          "fullname": {
+              "firstname": "Jane",
+              "lastname": "Doe"
+          },
+          "email": "captain@example.com",
+          "vehicle": {
+              "color": "red",
+              "plate": "ABC123",
+              "capacity": 4,
+              "vehicleType": "car"
+          },
+          "socketId": null // or the assigned socketId if applicable
+      },
+      "token": "your_jwt_token_here"
+  }
+  ```
+
+- **Error Responses**:
+  - **Status Code**: `400 Bad Request`
+    - **Response Body**:
+    ```json
+    {
+        "errors": [
+            {
+                "msg": "Invalid email",
+                "param": "email",
+                "location": "body"
+            },
+            {
+                "msg": "Password must be at least 6 characters",
+                "param": "password",
+                "location": "body"
+            }
+        ]
+    }
+    ```
+
+  - **Status Code**: `401 Unauthorized`
+    - **Response Body**:
+    ```json
+    {
+        "message": "Invalid email or password"
+    }
+    ```
+
+### Captain Profile
+- **Endpoint**: `GET /captains/profile`
+- **Description**: Retrieves the profile information of the currently authenticated captain. The captain must be logged in and provide a valid JWT in the request.
+
+#### Responses
+- **Success Response**:
+  - **Status Code**: `200 OK`
+  - **Response Body**:
+  ```json
+  {
+      "captain": {
+          "fullname": {
+              "firstname": "Jane",
+              "lastname": "Doe"
+          },
+          "email": "captain@example.com",
+          "vehicle": {
+              "color": "red",
+              "plate": "ABC123",
+              "capacity": 4,
+              "vehicleType": "car"
+          },
+          "socketId": null // or the assigned socketId if applicable
+      }
+  }
+  ```
+
+- **Error Responses**:
+  - **Status Code**: `401 Unauthorized`
+    - **Response Body**:
+    ```json
+    {
+        "message": "Unauthorized access"
+    }
+    ```
+
+### Captain Logout
+- **Endpoint**: `GET /captains/logout`
+- **Description**: Logs out the currently authenticated captain by invalidating their JWT and clearing the cookie.
+
+#### Responses
+- **Success Response**:
+  - **Status Code**: `200 OK`
+  - **Response Body**:
+  ```json
+  {
+      "message": "logout successfully"
+  }
+  ```
+
 ## Setup Instructions
 1. Clone the repository.
 2. Install dependencies:
